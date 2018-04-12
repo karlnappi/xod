@@ -19,6 +19,19 @@ export const ERROR = {
   CANT_GET_PATCH_BY_NODEID:
     'Can\'t find prototype Patch of Node with Id "{nodeId}" from Patch "{patchPath}"',
   GENERIC_TERMINALS_REQUIRED: 'At least one generic terminal is required',
+  // checking specializations of an abstract patch
+  SPECIALIZATION_PATCH_CANT_BE_ABSTRACT: "Specialization can't be abstract",
+  SPECIALIZATION_PATCH_CANT_HAVE_GENERIC_PINS:
+    "Specialization can't have generic pins",
+  SPECIALIZATION_PATCH_MUST_HAVE_N_INPUTS:
+    'Patch must have {desiredInputsNumber} inputs',
+  SPECIALIZATION_PATCH_MUST_HAVE_N_OUTPUTS:
+    'Patch must have {desiredOutputsNumber} outputs',
+  SPECIALIZATION_STATIC_PINS_DO_NOT_MATCH: 'Static pins do not match',
+  SPECIALIZATION_HAS_CONFLICTING_TYPES_FOR_GENERIC:
+    'Conflicting types for {genericType}: {typeNames}',
+  SPECIALIZATION_HAS_WRONG_NAME:
+    'Specialization should be named {expectedSpecializationBaseName}',
   // pathes
   PATH_INVALID: 'Path is empty or contains invalid characters',
   // nodes
@@ -60,6 +73,10 @@ export const ERROR = {
     'Casting patch "{patchPath}" is not found in the project',
   CANT_CAST_TYPES_DIRECTLY:
     '{patchPath}: type {fromType} can’t cast to {toType} directly.',
+  CANT_FIND_SPECIALIZATIONS_FOR_ABSTRACT_PATCH:
+    "Can't find specializations for abstrat patch {patchPath}",
+  CONFLICTING_SPECIALIZATIONS_FOR_ABSTRACT_PATCH:
+    'Conflicting specializations for abstrat patch {patchPath}: {conflictingSpecializations}. Switch to one of them explicitly to continue.',
   // .xodball format
   NOT_A_JSON: 'File that you try to load is not in a JSON format',
   INVALID_XODBALL_FORMAT:
