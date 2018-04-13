@@ -1391,18 +1391,17 @@ export const checkSpecializationMatchesAbstraction = def(
       );
     }
 
-    const [abstractPatchPins, checkedPatchPins] = R.map(
-      R.compose(
-        R.map(R.sortBy(Pin.getPinOrder)),
-        R.groupBy(Pin.getPinDirection),
-        listPins
-      )
+    const [
+      numberOfPinsInAbstractPatchByDirection,
+      numberOfPinsInSpecializationPatchByDirection,
+    ] = R.map(
+      R.compose(R.map(R.length), R.groupBy(Pin.getPinDirection), listPins)
     )([abstractPatch, specializationPatch]);
 
     // check that patch has a proper number of inputs and outputs
     if (
-      abstractPatchPins[CONST.PIN_DIRECTION.INPUT].length !==
-      checkedPatchPins[CONST.PIN_DIRECTION.INPUT].length
+      numberOfPinsInAbstractPatchByDirection[CONST.PIN_DIRECTION.INPUT] !==
+      numberOfPinsInSpecializationPatchByDirection[CONST.PIN_DIRECTION.INPUT]
     ) {
       return Either.Left(
         new Error(
@@ -1410,7 +1409,9 @@ export const checkSpecializationMatchesAbstraction = def(
             CONST.ERROR.SPECIALIZATION_PATCH_MUST_HAVE_N_INPUTS,
             {
               desiredInputsNumber:
-                abstractPatchPins[CONST.PIN_DIRECTION.INPUT].length,
+                numberOfPinsInAbstractPatchByDirection[
+                  CONST.PIN_DIRECTION.INPUT
+                ],
             }
           )
         )
@@ -1418,8 +1419,8 @@ export const checkSpecializationMatchesAbstraction = def(
     }
 
     if (
-      abstractPatchPins[CONST.PIN_DIRECTION.OUTPUT].length !==
-      checkedPatchPins[CONST.PIN_DIRECTION.OUTPUT].length
+      numberOfPinsInAbstractPatchByDirection[CONST.PIN_DIRECTION.OUTPUT] !==
+      numberOfPinsInSpecializationPatchByDirection[CONST.PIN_DIRECTION.OUTPUT]
     ) {
       return Either.Left(
         new Error(
@@ -1427,7 +1428,9 @@ export const checkSpecializationMatchesAbstraction = def(
             CONST.ERROR.SPECIALIZATION_PATCH_MUST_HAVE_N_OUTPUTS,
             {
               desiredOutputsNumber:
-                abstractPatchPins[CONST.PIN_DIRECTION.OUTPUT].length,
+                numberOfPinsInAbstractPatchByDirection[
+                  CONST.PIN_DIRECTION.OUTPUT
+                ],
             }
           )
         )
@@ -1437,8 +1440,16 @@ export const checkSpecializationMatchesAbstraction = def(
     const [genericPinPairs, staticPinPairs] = R.compose(
       R.partition(R.pipe(R.nth(0), Pin.isGenericPin)),
       R.apply(R.zip),
-      R.map(R.pipe(R.values, R.apply(R.concat)))
-    )([abstractPatchPins, checkedPatchPins]);
+      R.map(
+        R.compose(
+          R.sortWith([
+            R.ascend(Pin.getPinDirection),
+            R.ascend(Pin.getPinOrder),
+          ]),
+          listPins
+        )
+      )
+    )([abstractPatch, specializationPatch]);
 
     const staticTypesMatch = R.all(
       R.apply(R.eqBy(Pin.getPinType)),
